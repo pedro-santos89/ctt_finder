@@ -174,7 +174,7 @@ class _FilterSheetState extends State<FilterSheet> {
           // Title
           Row(
             children: [
-              const Icon(Icons.tune, color: Color(0xFFD32F2F)),
+              const Icon(Icons.tune, color: Color(0xFFDF0024)),
               const SizedBox(width: 8),
               Text(
                 AppLocalizations.of(context).filters,
@@ -203,7 +203,7 @@ class _FilterSheetState extends State<FilterSheet> {
                   icon: Icons.store,
                   label: AppLocalizations.of(context).storesAndPoints,
                   selected: _showStations,
-                  color: const Color(0xFFD32F2F),
+                  color: const Color(0xFFDF0024),
                   onTap: () => setState(() => _showStations = !_showStations),
                 ),
               ),
@@ -254,7 +254,7 @@ class _FilterSheetState extends State<FilterSheet> {
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Color(0xFFD32F2F)),
+                        strokeWidth: 2, color: Color(0xFFDF0024)),
                   )),
                 )
               : _buildGeoDropdown(
@@ -288,7 +288,7 @@ class _FilterSheetState extends State<FilterSheet> {
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Color(0xFFD32F2F)),
+                        strokeWidth: 2, color: Color(0xFFDF0024)),
                   )),
                 )
               : _buildGeoDropdown(
@@ -346,7 +346,7 @@ class _FilterSheetState extends State<FilterSheet> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD32F2F),
+                    backgroundColor: const Color(0xFFDF0024),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(

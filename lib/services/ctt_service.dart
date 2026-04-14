@@ -1,4 +1,4 @@
-Ôªø/// CTT location search service.
+/// CTT location search service.
 ///
 /// Provides methods to query the Portuguese postal-service (CTT) search
 /// endpoint for stations/mailboxes and the geographic-hierarchy JSON API
@@ -35,9 +35,9 @@ class GeoEntry {
 /// Singleton-style service that talks to *appserver2.ctt.pt*.
 ///
 /// * **Geographic hierarchy**: [fetchDistricts], [fetchMunicipalities],
-///   [fetchParishes] ‚Äî return lists of [GeoEntry].
+///   [fetchParishes] ó return lists of [GeoEntry].
 /// * **Location search**: [searchStations], [searchMailboxes],
-///   [searchAll] ‚Äî scrape the CTT HTML results page and return
+///   [searchAll] ó scrape the CTT HTML results page and return
 ///   [CttLocation] lists.
 class CttService {
   /// Root URL for all CTT API endpoints.
@@ -142,8 +142,8 @@ class CttService {
   /// When geography is partially selected, recursively expand the
   /// search to cover all sub-divisions.
   ///
-  /// * District only ‚Üí fetch all its municipalities ‚Üí recurse.
-  /// * Municipality only ‚Üí fetch all its parishes ‚Üí search each.
+  /// * District only ? fetch all its municipalities ? recurse.
+  /// * Municipality only ? fetch all its parishes ? search each.
   ///
   /// Returns a de-duplicated list of [CttLocation].
   Future<List<CttLocation>> _searchAllParishesIfNeeded({
@@ -154,7 +154,7 @@ class CttService {
     String? location,
     int page = 1,
   }) async {
-    // District set, but no municipality and no parish ‚Üí search every municipality
+    // District set, but no municipality and no parish ? search every municipality
     if (districtCode != null &&
         districtCode.isNotEmpty &&
         (municipalityCode == null || municipalityCode.isEmpty) &&
@@ -177,7 +177,7 @@ class CttService {
       }
     }
 
-    // Municipality set but no parish ‚Üí search every parish
+    // Municipality set but no parish ? search every parish
     if (districtCode != null &&
         districtCode.isNotEmpty &&
         municipalityCode != null &&
@@ -253,8 +253,8 @@ class CttService {
   /// Low-level search that POSTs to the CTT search endpoint.
   ///
   /// [stationType] selects the category:
-  /// * `"EC,PC,PARC"` ‚Äî stations (Lojas, Pontos, Parceiros).
-  /// * `"RECET"` ‚Äî mailboxes.
+  /// * `"EC,PC,PARC"` ó stations (Lojas, Pontos, Parceiros).
+  /// * `"RECET"` ó mailboxes.
   ///
   /// Returns a list of [CttLocation] parsed from the HTML response.
   Future<List<CttLocation>> _search({
@@ -336,7 +336,7 @@ class CttService {
         final lng = double.parse(qMatch.group(2)!);
 
         final typeText = entry.querySelector('p')?.text.trim() ?? '';
-        final name = entry.querySelector('h3')?.text.trim() ?? 'Esta√ß√£o CTT';
+        final name = entry.querySelector('h3')?.text.trim() ?? 'EstaÁ„o CTT';
 
         final divPosRelative = entry.querySelector('div.posRelative');
         String address = '';
@@ -352,7 +352,7 @@ class CttService {
             address = _decodeHtmlEntities(addressMatch.group(1)!.trim());
           }
 
-          final postalMatch = RegExp(r'(\d{4}-\d{3})\s+([A-Z√Ä-√ö ]+)')
+          final postalMatch = RegExp(r'(\d{4}-\d{3})\s+([A-Z¿-⁄ ]+)')
               .firstMatch(divPosRelative.text);
           if (postalMatch != null) {
             postalCode = postalMatch.group(1);
@@ -457,13 +457,13 @@ class CttService {
               RegExp(r'Freguesia</b>:\s*([^<]+)').firstMatch(innerHtml);
           if (match != null) parish = match.group(1)!.trim();
 
-          match = RegExp(r'Localiza√ß√£o</b>:\s*([^<]+)')
+          match = RegExp(r'LocalizaÁ„o</b>:\s*([^<]+)')
               .firstMatch(innerHtml);
           if (match != null) {
             address = _decodeHtmlEntities(match.group(1)!.trim());
           }
 
-          final postalMatch = RegExp(r'(\d{4}-\d{3})\s+([A-Z√Ä-√ö ]+)')
+          final postalMatch = RegExp(r'(\d{4}-\d{3})\s+([A-Z¿-⁄ ]+)')
               .firstMatch(divPosRelative.text);
           if (postalMatch != null) {
             postalCode = postalMatch.group(1);
@@ -498,7 +498,7 @@ class CttService {
           parish: parish,
           district: district ?? '',
           lastCollection: lastCollection,
-          services: ['Recolha de correspond√™ncia'],
+          services: ['Recolha de correspondÍncia'],
         ));
       } catch (_) {
         continue;
@@ -519,33 +519,33 @@ class CttService {
         .replaceAll('&gt;', '>')
         .replaceAll('&quot;', '"')
         .replaceAll('&#39;', "'")
-        .replaceAll('&ordm;', '¬∫')
-        .replaceAll('&ccedil;', '√ß')
-        .replaceAll('&Ccedil;', '√á')
-        .replaceAll('&atilde;', '√£')
-        .replaceAll('&Atilde;', '√É')
-        .replaceAll('&otilde;', '√µ')
-        .replaceAll('&Otilde;', '√ï')
-        .replaceAll('&aacute;', '√°')
-        .replaceAll('&Aacute;', '√Å')
-        .replaceAll('&eacute;', '√©')
-        .replaceAll('&Eacute;', '√â')
-        .replaceAll('&iacute;', '√≠')
-        .replaceAll('&Iacute;', '√ç')
-        .replaceAll('&oacute;', '√≥')
-        .replaceAll('&Oacute;', '√ì')
-        .replaceAll('&uacute;', '√∫')
-        .replaceAll('&Uacute;', '√ö')
-        .replaceAll('&agrave;', '√†')
-        .replaceAll('&Agrave;', '√Ä')
-        .replaceAll('&acirc;', '√¢')
-        .replaceAll('&Acirc;', '√Ç')
-        .replaceAll('&ecirc;', '√™')
-        .replaceAll('&Ecirc;', '√ä')
-        .replaceAll('&ocirc;', '√¥')
-        .replaceAll('&Ocirc;', '√î')
-        .replaceAll('&uuml;', '√º')
-        .replaceAll('&Uuml;', '√ú')
+        .replaceAll('&ordm;', '∫')
+        .replaceAll('&ccedil;', 'Á')
+        .replaceAll('&Ccedil;', '«')
+        .replaceAll('&atilde;', '„')
+        .replaceAll('&Atilde;', '√')
+        .replaceAll('&otilde;', 'ı')
+        .replaceAll('&Otilde;', '’')
+        .replaceAll('&aacute;', '·')
+        .replaceAll('&Aacute;', '¡')
+        .replaceAll('&eacute;', 'È')
+        .replaceAll('&Eacute;', '…')
+        .replaceAll('&iacute;', 'Ì')
+        .replaceAll('&Iacute;', 'Õ')
+        .replaceAll('&oacute;', 'Û')
+        .replaceAll('&Oacute;', '”')
+        .replaceAll('&uacute;', '˙')
+        .replaceAll('&Uacute;', '⁄')
+        .replaceAll('&agrave;', '‡')
+        .replaceAll('&Agrave;', '¿')
+        .replaceAll('&acirc;', '‚')
+        .replaceAll('&Acirc;', '¬')
+        .replaceAll('&ecirc;', 'Í')
+        .replaceAll('&Ecirc;', ' ')
+        .replaceAll('&ocirc;', 'Ù')
+        .replaceAll('&Ocirc;', '‘')
+        .replaceAll('&uuml;', '¸')
+        .replaceAll('&Uuml;', '‹')
         .replaceAll('&nbsp;', ' ')
         .replaceAllMapped(RegExp(r'&#(\d+);'), (Match m) {
       final code = int.tryParse(m.group(1)!);
@@ -554,7 +554,7 @@ class CttService {
   }
 
   /// Converts an ALL-CAPS string to Title Case, keeping short
-  /// Portuguese prepositions ("de", "da", "do", ‚Ä¶) lowercase.
+  /// Portuguese prepositions ("de", "da", "do", Ö) lowercase.
   String _titleCase(String input) {
     if (input.isEmpty) return input;
     return input.split(' ').map((word) {

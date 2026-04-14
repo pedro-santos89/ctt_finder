@@ -25,8 +25,8 @@ class WelcomeScreen extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFD32F2F),
-              Color(0xFFB71C1C),
+              Color(0xFFDF0024),
+              Color(0xFFB0001C),
             ],
           ),
         ),
@@ -63,7 +63,7 @@ class WelcomeScreen extends StatelessWidget {
                   child: Icon(
                     Icons.local_post_office,
                     size: 56,
-                    color: Color(0xFFD32F2F),
+                    color: Color(0xFFDF0024),
                   ),
                 ),
               ),
@@ -114,7 +114,7 @@ class WelcomeScreen extends StatelessWidget {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFFD32F2F),
+                      foregroundColor: const Color(0xFFDF0024),
                       padding: const EdgeInsets.symmetric(vertical: 18),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),

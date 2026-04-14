@@ -49,12 +49,12 @@ class _CttFinderAppState extends State<CttFinderApp> {
         theme: ThemeData(
           fontFamily: 'ActoCTT-Medium',
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFFD32F2F),
-            primary: const Color(0xFFD32F2F),
+            seedColor: const Color(0xFFDF0024),
+            primary: const Color(0xFFDF0024),
           ),
           useMaterial3: true,
           appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFFD32F2F),
+            backgroundColor: Color(0xFFDF0024),
             foregroundColor: Colors.white,
           ),
         ),

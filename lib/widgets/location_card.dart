@@ -57,7 +57,7 @@ class LocationCard extends StatelessWidget {
                     height: 44,
                     decoration: BoxDecoration(
                       color: isStation
-                          ? const Color(0xFFD32F2F)
+                          ? const Color(0xFFDF0024)
                           : const Color(0xFFFF8F00),
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -88,7 +88,7 @@ class LocationCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             color: isStation
-                                ? const Color(0xFFD32F2F)
+                                ? const Color(0xFFDF0024)
                                 : const Color(0xFFFF8F00),
                             fontWeight: FontWeight.w600,
                           ),

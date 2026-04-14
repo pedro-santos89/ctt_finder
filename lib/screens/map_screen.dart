@@ -299,13 +299,13 @@ class _MapScreenState extends State<MapScreen> {
               color: isSelected
                   ? Colors.white
                   : location.isStation
-                      ? const Color(0xFFD32F2F)
+                      ? const Color(0xFFDF0024)
                       : const Color(0xFFFF8F00),
               shape: BoxShape.circle,
               border: Border.all(
                 color: isSelected
                     ? (location.isStation
-                        ? const Color(0xFFD32F2F)
+                        ? const Color(0xFFDF0024)
                         : const Color(0xFFFF8F00))
                     : Colors.white,
                 width: isSelected ? 3 : 2,
@@ -322,7 +322,7 @@ class _MapScreenState extends State<MapScreen> {
               location.isStation ? Icons.store : Icons.mail,
               color: isSelected
                   ? (location.isStation
-                      ? const Color(0xFFD32F2F)
+                      ? const Color(0xFFDF0024)
                       : const Color(0xFFFF8F00))
                   : Colors.white,
               size: isSelected ? 28 : 22,
@@ -405,7 +405,7 @@ class _MapScreenState extends State<MapScreen> {
                     child: Row(
                       children: [
                         const SizedBox(width: 16),
-                        const Icon(Icons.search, color: Color(0xFFD32F2F)),
+                        const Icon(Icons.search, color: Color(0xFFDF0024)),
                         const SizedBox(width: 8),
                         Expanded(
                           child: TextField(
@@ -436,9 +436,9 @@ class _MapScreenState extends State<MapScreen> {
                             isLabelVisible: _selectedDistrict != null ||
                                 !_showStations ||
                                 !_showMailboxes,
-                            backgroundColor: const Color(0xFFD32F2F),
+                            backgroundColor: const Color(0xFFDF0024),
                             child:
-                                const Icon(Icons.tune, color: Color(0xFFD32F2F)),
+                                const Icon(Icons.tune, color: Color(0xFFDF0024)),
                           ),
                           onPressed: _openFilterSheet,
                         ),
@@ -476,7 +476,7 @@ class _MapScreenState extends State<MapScreen> {
                           leading: Icon(
                             loc.isStation ? Icons.store : Icons.mail,
                             color: loc.isStation
-                                ? const Color(0xFFD32F2F)
+                                ? const Color(0xFFDF0024)
                                 : const Color(0xFFFF8F00),
                           ),
                           title: Text(
@@ -505,7 +505,7 @@ class _MapScreenState extends State<MapScreen> {
               child: Card(
                 child: Padding(
                   padding: EdgeInsets.all(24),
-                  child: CircularProgressIndicator(color: Color(0xFFD32F2F)),
+                  child: CircularProgressIndicator(color: Color(0xFFDF0024)),
                 ),
               ),
             ),
@@ -528,7 +528,7 @@ class _MapScreenState extends State<MapScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(Icons.location_on,
-                        size: 16, color: Color(0xFFD32F2F)),
+                        size: 16, color: Color(0xFFDF0024)),
                     const SizedBox(width: 4),
                     Text(
                       _filteredLocations.isEmpty && !_isLoading
@@ -562,7 +562,7 @@ class _MapScreenState extends State<MapScreen> {
                   child: Text(
                     l.isPt ? 'EN' : 'PT',
                     style: const TextStyle(
-                      color: Color(0xFFD32F2F),
+                      color: Color(0xFFDF0024),
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -583,7 +583,7 @@ class _MapScreenState extends State<MapScreen> {
                     _userLocation != null
                         ? Icons.my_location
                         : Icons.location_searching,
-                    color: const Color(0xFFD32F2F),
+                    color: const Color(0xFFDF0024),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -593,14 +593,14 @@ class _MapScreenState extends State<MapScreen> {
                   onPressed: () {
                     _mapController.move(_portugalCenter, 7.0);
                   },
-                  child: const Icon(Icons.public, color: Color(0xFFD32F2F)),
+                  child: const Icon(Icons.public, color: Color(0xFFDF0024)),
                 ),
                 const SizedBox(height: 8),
                 FloatingActionButton.small(
                   heroTag: 'list_view',
                   backgroundColor: Colors.white,
                   onPressed: _openListView,
-                  child: const Icon(Icons.list, color: Color(0xFFD32F2F)),
+                  child: const Icon(Icons.list, color: Color(0xFFDF0024)),
                 ),
               ],
             ),
@@ -670,7 +670,7 @@ class _MapScreenState extends State<MapScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    const Icon(Icons.list, color: Color(0xFFD32F2F)),
+                    const Icon(Icons.list, color: Color(0xFFDF0024)),
                     const SizedBox(width: 8),
                     Text(
                       '${l.allLocations} (${_filteredLocations.length})',
@@ -698,7 +698,7 @@ class _MapScreenState extends State<MapScreen> {
                       child: ListTile(
                         leading: CircleAvatar(
                           backgroundColor: loc.isStation
-                              ? const Color(0xFFD32F2F)
+                              ? const Color(0xFFDF0024)
                               : const Color(0xFFFF8F00),
                           child: Icon(
                             loc.isStation ? Icons.store : Icons.mail,

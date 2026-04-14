@@ -35,7 +35,7 @@ class DetailScreen extends StatelessWidget {
             expandedHeight: 250,
             pinned: true,
             backgroundColor: isStation
-                ? const Color(0xFFD32F2F)
+                ? const Color(0xFFDF0024)
                 : const Color(0xFFFF8F00),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -71,7 +71,7 @@ class DetailScreen extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             color: isStation
-                                ? const Color(0xFFD32F2F)
+                                ? const Color(0xFFDF0024)
                                 : const Color(0xFFFF8F00),
                             shape: BoxShape.circle,
                             border:
@@ -125,7 +125,7 @@ class DetailScreen extends StatelessWidget {
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
                           color: (isStation
-                                  ? const Color(0xFFD32F2F)
+                                  ? const Color(0xFFDF0024)
                                   : const Color(0xFFFF8F00))
                               .withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
@@ -134,7 +134,7 @@ class DetailScreen extends StatelessWidget {
                           location.typeLabel,
                           style: TextStyle(
                             color: isStation
-                                ? const Color(0xFFD32F2F)
+                                ? const Color(0xFFDF0024)
                                 : const Color(0xFFFF8F00),
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
@@ -231,7 +231,7 @@ class DetailScreen extends StatelessWidget {
                               icon: const Icon(Icons.directions),
                               label: Text(l.directions),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFD32F2F),
+                                backgroundColor: const Color(0xFFDF0024),
                                 foregroundColor: Colors.white,
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 14),
@@ -248,9 +248,9 @@ class DetailScreen extends StatelessWidget {
                               icon: const Icon(Icons.share),
                               label: Text(l.share),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: const Color(0xFFD32F2F),
+                                foregroundColor: const Color(0xFFDF0024),
                                 side: const BorderSide(
-                                    color: Color(0xFFD32F2F)),
+                                    color: Color(0xFFDF0024)),
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(
@@ -422,7 +422,7 @@ class _InfoCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, color: const Color(0xFFD32F2F), size: 22),
+              Icon(icon, color: const Color(0xFFDF0024), size: 22),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -481,7 +481,7 @@ class _ServicesCard extends StatelessWidget {
             Row(
               children: [
                 const Icon(Icons.miscellaneous_services,
-                    color: Color(0xFFD32F2F), size: 22),
+                    color: Color(0xFFDF0024), size: 22),
                 const SizedBox(width: 12),
                 Text(
                   AppLocalizations.of(context).services,
@@ -507,7 +507,7 @@ class _ServicesCard extends StatelessWidget {
                     break;
                   case 'Correio e Encomendas':
                     icon = Icons.local_shipping;
-                    color = const Color(0xFFD32F2F);
+                    color = const Color(0xFFDF0024);
                     break;
                   case 'Finanças e Pagamentos':
                     icon = Icons.payments;
