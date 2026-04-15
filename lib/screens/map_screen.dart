@@ -173,8 +173,14 @@ class _MapScreenState extends State<MapScreen> {
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
+        final loc = AppLocalizations.of(context);
+        final msg = e.toString().contains('TimeoutException')
+            ? loc.errorCttUnavailable
+            : e.toString().contains('CTT service temporarily unavailable')
+                ? loc.errorCttUnavailable
+                : '${loc.errorLoadingLocations}: $e';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${AppLocalizations.of(context).errorLoadingLocations}: $e')),
+          SnackBar(content: Text(msg)),
         );
       }
     }

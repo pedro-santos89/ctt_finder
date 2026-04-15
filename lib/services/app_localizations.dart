@@ -68,6 +68,9 @@ class AppLocalizations extends InheritedWidget {
   String get errorLoadingLocations => isPt
       ? 'Erro ao carregar localizações'
       : 'Error loading locations';
+  String get errorCttUnavailable => isPt
+      ? 'Serviço CTT temporariamente indisponível. Tente novamente mais tarde.'
+      : 'CTT service temporarily unavailable. Please try again later.';
 
   // --------------- Filter sheet strings ---------------
 

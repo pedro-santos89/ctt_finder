@@ -1,4 +1,4 @@
-package pt.ctt.finder.ctt_finder
+package com.animarasa.cttfinder
 
 import io.flutter.embedding.android.FlutterActivity
 

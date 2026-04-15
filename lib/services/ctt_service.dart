@@ -9,7 +9,9 @@
 library;
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 import 'package:html/parser.dart' as html_parser;
 import 'package:latlong2/latlong.dart';
 import '../models/ctt_location.dart';
@@ -35,9 +37,9 @@ class GeoEntry {
 /// Singleton-style service that talks to *appserver2.ctt.pt*.
 ///
 /// * **Geographic hierarchy**: [fetchDistricts], [fetchMunicipalities],
-///   [fetchParishes] — return lists of [GeoEntry].
+///   [fetchParishes] ï¿½ return lists of [GeoEntry].
 /// * **Location search**: [searchStations], [searchMailboxes],
-///   [searchAll] — scrape the CTT HTML results page and return
+///   [searchAll] ï¿½ scrape the CTT HTML results page and return
 ///   [CttLocation] lists.
 class CttService {
   /// Root URL for all CTT API endpoints.
@@ -50,11 +52,25 @@ class CttService {
   static const String _searchUrl =
       '$_baseUrl/feapl_2/app/open/stationSearch/search.jspx';
 
+  /// Browser-like User-Agent required by the CTT server.
+  static const String _userAgent =
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+      '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
   /// HTTP client (injectable for testing).
   final http.Client _client;
 
   /// Creates a [CttService] with an optional [client] for testing.
-  CttService({http.Client? client}) : _client = client ?? http.Client();
+  CttService({http.Client? client})
+      : _client = client ?? _createClient();
+
+  /// Creates an [IOClient] with a User-Agent and short connection timeout.
+  static http.Client _createClient() {
+    final inner = HttpClient()
+      ..connectionTimeout = const Duration(seconds: 10)
+      ..userAgent = _userAgent;
+    return IOClient(inner);
+  }
 
   // -------------------------------------------------------------------
   // Geographical hierarchy (JSON APIs)
@@ -63,8 +79,9 @@ class CttService {
   /// Fetch all districts of Portugal.
   Future<List<GeoEntry>> fetchDistricts() async {
     final uri = Uri.parse('$_screfBase/districts');
-    final response =
-        await _client.get(uri).timeout(const Duration(seconds: 15));
+    final response = await _client
+        .get(uri, headers: {'User-Agent': _userAgent})
+        .timeout(const Duration(seconds: 15));
     if (response.statusCode != 200) return [];
     final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
     return data
@@ -76,8 +93,9 @@ class CttService {
   Future<List<GeoEntry>> fetchMunicipalities(String districtCode) async {
     final uri =
         Uri.parse('$_screfBase/districts/$districtCode/municipalities');
-    final response =
-        await _client.get(uri).timeout(const Duration(seconds: 15));
+    final response = await _client
+        .get(uri, headers: {'User-Agent': _userAgent})
+        .timeout(const Duration(seconds: 15));
     if (response.statusCode != 200) return [];
     final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
     return data
@@ -90,8 +108,9 @@ class CttService {
       String districtCode, String municipalityCode) async {
     final uri = Uri.parse(
         '$_screfBase/districts/$districtCode/municipalities/$municipalityCode/parishes');
-    final response =
-        await _client.get(uri).timeout(const Duration(seconds: 15));
+    final response = await _client
+        .get(uri, headers: {'User-Agent': _userAgent})
+        .timeout(const Duration(seconds: 15));
     if (response.statusCode != 200) return [];
     final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
     return data
@@ -253,8 +272,8 @@ class CttService {
   /// Low-level search that POSTs to the CTT search endpoint.
   ///
   /// [stationType] selects the category:
-  /// * `"EC,PC,PARC"` — stations (Lojas, Pontos, Parceiros).
-  /// * `"RECET"` — mailboxes.
+  /// * `"EC,PC,PARC"` ï¿½ stations (Lojas, Pontos, Parceiros).
+  /// * `"RECET"` ï¿½ mailboxes.
   ///
   /// Returns a list of [CttLocation] parsed from the HTML response.
   Future<List<CttLocation>> _search({
@@ -292,14 +311,22 @@ class CttService {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Referer':
                 '$_baseUrl/feapl_2/app/open/stationSearch/stationSearch.jspx',
+            'User-Agent': _userAgent,
           },
           body: body,
         )
-        .timeout(const Duration(seconds: 30));
+        .timeout(const Duration(seconds: 15));
 
     if (response.statusCode != 200) return [];
 
     final htmlContent = utf8.decode(response.bodyBytes);
+
+    // Detect CTT server-side error responses
+    if (htmlContent.contains('actionErrors') &&
+        htmlContent.contains('nÃ£o Ã© possÃ­vel satisfazer')) {
+      throw Exception('CTT service temporarily unavailable');
+    }
+
     if (stationType == 'RECET') {
       return _parseMailboxResults(htmlContent);
     }
@@ -336,7 +363,7 @@ class CttService {
         final lng = double.parse(qMatch.group(2)!);
 
         final typeText = entry.querySelector('p')?.text.trim() ?? '';
-        final name = entry.querySelector('h3')?.text.trim() ?? 'Estação CTT';
+        final name = entry.querySelector('h3')?.text.trim() ?? 'Estaï¿½ï¿½o CTT';
 
         final divPosRelative = entry.querySelector('div.posRelative');
         String address = '';
@@ -352,7 +379,7 @@ class CttService {
             address = _decodeHtmlEntities(addressMatch.group(1)!.trim());
           }
 
-          final postalMatch = RegExp(r'(\d{4}-\d{3})\s+([A-ZÀ-Ú ]+)')
+          final postalMatch = RegExp(r'(\d{4}-\d{3})\s+([A-Zï¿½-ï¿½ ]+)')
               .firstMatch(divPosRelative.text);
           if (postalMatch != null) {
             postalCode = postalMatch.group(1);
@@ -457,13 +484,13 @@ class CttService {
               RegExp(r'Freguesia</b>:\s*([^<]+)').firstMatch(innerHtml);
           if (match != null) parish = match.group(1)!.trim();
 
-          match = RegExp(r'Localização</b>:\s*([^<]+)')
+          match = RegExp(r'Localizaï¿½ï¿½o</b>:\s*([^<]+)')
               .firstMatch(innerHtml);
           if (match != null) {
             address = _decodeHtmlEntities(match.group(1)!.trim());
           }
 
-          final postalMatch = RegExp(r'(\d{4}-\d{3})\s+([A-ZÀ-Ú ]+)')
+          final postalMatch = RegExp(r'(\d{4}-\d{3})\s+([A-Zï¿½-ï¿½ ]+)')
               .firstMatch(divPosRelative.text);
           if (postalMatch != null) {
             postalCode = postalMatch.group(1);
@@ -498,7 +525,7 @@ class CttService {
           parish: parish,
           district: district ?? '',
           lastCollection: lastCollection,
-          services: ['Recolha de correspondência'],
+          services: ['Recolha de correspondï¿½ncia'],
         ));
       } catch (_) {
         continue;
@@ -519,33 +546,33 @@ class CttService {
         .replaceAll('&gt;', '>')
         .replaceAll('&quot;', '"')
         .replaceAll('&#39;', "'")
-        .replaceAll('&ordm;', 'º')
-        .replaceAll('&ccedil;', 'ç')
-        .replaceAll('&Ccedil;', 'Ç')
-        .replaceAll('&atilde;', 'ã')
-        .replaceAll('&Atilde;', 'Ã')
-        .replaceAll('&otilde;', 'õ')
-        .replaceAll('&Otilde;', 'Õ')
-        .replaceAll('&aacute;', 'á')
-        .replaceAll('&Aacute;', 'Á')
-        .replaceAll('&eacute;', 'é')
-        .replaceAll('&Eacute;', 'É')
-        .replaceAll('&iacute;', 'í')
-        .replaceAll('&Iacute;', 'Í')
-        .replaceAll('&oacute;', 'ó')
-        .replaceAll('&Oacute;', 'Ó')
-        .replaceAll('&uacute;', 'ú')
-        .replaceAll('&Uacute;', 'Ú')
-        .replaceAll('&agrave;', 'à')
-        .replaceAll('&Agrave;', 'À')
-        .replaceAll('&acirc;', 'â')
-        .replaceAll('&Acirc;', 'Â')
-        .replaceAll('&ecirc;', 'ê')
-        .replaceAll('&Ecirc;', 'Ê')
-        .replaceAll('&ocirc;', 'ô')
-        .replaceAll('&Ocirc;', 'Ô')
-        .replaceAll('&uuml;', 'ü')
-        .replaceAll('&Uuml;', 'Ü')
+        .replaceAll('&ordm;', 'ï¿½')
+        .replaceAll('&ccedil;', 'ï¿½')
+        .replaceAll('&Ccedil;', 'ï¿½')
+        .replaceAll('&atilde;', 'ï¿½')
+        .replaceAll('&Atilde;', 'ï¿½')
+        .replaceAll('&otilde;', 'ï¿½')
+        .replaceAll('&Otilde;', 'ï¿½')
+        .replaceAll('&aacute;', 'ï¿½')
+        .replaceAll('&Aacute;', 'ï¿½')
+        .replaceAll('&eacute;', 'ï¿½')
+        .replaceAll('&Eacute;', 'ï¿½')
+        .replaceAll('&iacute;', 'ï¿½')
+        .replaceAll('&Iacute;', 'ï¿½')
+        .replaceAll('&oacute;', 'ï¿½')
+        .replaceAll('&Oacute;', 'ï¿½')
+        .replaceAll('&uacute;', 'ï¿½')
+        .replaceAll('&Uacute;', 'ï¿½')
+        .replaceAll('&agrave;', 'ï¿½')
+        .replaceAll('&Agrave;', 'ï¿½')
+        .replaceAll('&acirc;', 'ï¿½')
+        .replaceAll('&Acirc;', 'ï¿½')
+        .replaceAll('&ecirc;', 'ï¿½')
+        .replaceAll('&Ecirc;', 'ï¿½')
+        .replaceAll('&ocirc;', 'ï¿½')
+        .replaceAll('&Ocirc;', 'ï¿½')
+        .replaceAll('&uuml;', 'ï¿½')
+        .replaceAll('&Uuml;', 'ï¿½')
         .replaceAll('&nbsp;', ' ')
         .replaceAllMapped(RegExp(r'&#(\d+);'), (Match m) {
       final code = int.tryParse(m.group(1)!);
@@ -554,7 +581,7 @@ class CttService {
   }
 
   /// Converts an ALL-CAPS string to Title Case, keeping short
-  /// Portuguese prepositions ("de", "da", "do", …) lowercase.
+  /// Portuguese prepositions ("de", "da", "do", ï¿½) lowercase.
   String _titleCase(String input) {
     if (input.isEmpty) return input;
     return input.split(' ').map((word) {
